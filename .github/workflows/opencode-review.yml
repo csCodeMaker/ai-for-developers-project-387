@@ -7,11 +7,11 @@ on:
 jobs:
   review:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-      pull-requests: read
-      issues: read
+    permissions: 
+      contents: write
+      pull-requests: write
+      checks: write
+      security-events: write  # Required if uploading code scanning alerts
     steps:
       - uses: actions/checkout@v6
         with:
