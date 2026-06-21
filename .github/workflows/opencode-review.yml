@@ -11,6 +11,7 @@ jobs:
       contents: write
       pull-requests: write
       checks: write
+      issues: write
       security-events: write  # Required if uploading code scanning alerts
     steps:
       - uses: actions/checkout@v6
