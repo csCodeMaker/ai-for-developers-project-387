@@ -37,6 +37,36 @@ func TestGenerate_HidesPastSlots(t *testing.T) {
 	assert.Len(t, got, 14)
 }
 
+func TestGenerate_DifferentWorkHours(t *testing.T) {
+	date := time.Now().AddDate(0, 0, 1)
+	now := time.Now()
+
+	got := Generate(date, now, nil, Params{WorkStartHour: 10, WorkEndHour: 16, IntervalMin: 30})
+
+	// 10:00–15:30 with 30m steps = 12 slots (16-10=6 hours * 2 = 12)
+	assert.Len(t, got, 12)
+}
+
+func TestGenerate_DifferentInterval(t *testing.T) {
+	date := time.Now().AddDate(0, 0, 1)
+	now := time.Now()
+
+	got := Generate(date, now, nil, Params{WorkStartHour: 8, WorkEndHour: 20, IntervalMin: 60})
+
+	// 08:00–19:00 with 60m steps = 12 slots
+	assert.Len(t, got, 12)
+}
+
+func TestGenerate_NoSlotsForTodayCompletelyPast(t *testing.T) {
+	loc := time.Local
+	now := time.Date(2030, 1, 10, 20, 0, 0, 0, loc)
+	date := time.Date(2030, 1, 10, 0, 0, 0, 0, loc)
+
+	got := Generate(date, now, nil, defaultParams)
+
+	assert.Empty(t, got)
+}
+
 func TestGenerate_MarksBusy(t *testing.T) {
 	loc := time.Local
 	now := time.Date(2030, 1, 10, 0, 0, 0, 0, loc)
