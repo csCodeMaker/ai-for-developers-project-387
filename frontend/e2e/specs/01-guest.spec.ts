@@ -78,6 +78,40 @@ test.describe('Гость — выбор даты и слотов (US-2)', () =>
 });
 
 test.describe('Гость — создание бронирования (US-3)', () => {
+  test('кнопка отправки неактивна при пустом имени или email', async ({ page }) => {
+    const home = new HomePage(page);
+    await home.goto();
+    await page.getByRole('button', { name: 'Записаться' }).click();
+    await page.waitForURL(/\/book\//);
+
+    const booking = new BookingPage(page);
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const responsePromise = page.waitForResponse(
+      (res) => res.url().includes('/slots') && res.status() === 200,
+    );
+    const dayBtn = booking.getDatePicker().getByRole('button').filter({ hasText: String(tomorrow.getDate()) }).first();
+    await expect(dayBtn).toBeVisible();
+    await dayBtn.click();
+    await responsePromise;
+
+    await expect(booking.getFreeSlots().first()).toBeVisible({ timeout: 5000 });
+    await booking.clickSlot(0);
+
+    await expect(booking.getSubmitButton()).toBeDisabled();
+
+    await booking.fillName('Иван Петров');
+    await expect(booking.getSubmitButton()).toBeDisabled();
+
+    await booking.fillEmail('ivan@example.com');
+    await expect(booking.getSubmitButton()).toBeEnabled();
+
+    await booking.getNameInput().fill('');
+    await expect(booking.getSubmitButton()).toBeDisabled();
+  });
+
   test('заполняет форму и успешно бронирует слот', async ({ page }) => {
     const home = new HomePage(page);
     await home.goto();

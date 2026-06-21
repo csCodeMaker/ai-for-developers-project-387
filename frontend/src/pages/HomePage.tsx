@@ -18,9 +18,13 @@ export function HomePage() {
         Выберите тип встречи для записи.
       </Text>
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-        {eventTypes.map((et) => (
-          <EventTypeCard key={et.id} eventType={et} />
-        ))}
+        {eventTypes.length === 0 ? (
+          <Text c="dimmed" size="sm">Нет доступных типов событий</Text>
+        ) : (
+          eventTypes.map((et) => (
+            <EventTypeCard key={et.id} eventType={et} />
+          ))
+        )}
       </SimpleGrid>
     </Container>
   );
