@@ -216,3 +216,46 @@ test.describe('Гость — ошибка при занятом слоте (US-
     await expect(page.getByRole('alert')).toBeVisible({ timeout: 5000 });
   });
 });
+
+test.describe('Гость — форма бронирования (US-11)', () => {
+  test('после выбора слота появляется форма с полями Имя и Email', async ({ page }) => {
+    const home = new HomePage(page);
+    await home.goto();
+    await page.getByRole('button', { name: 'Записаться' }).click();
+    await page.waitForURL(/\/book\//);
+
+    const booking = new BookingPage(page);
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const slotsPromise = page.waitForResponse(
+      (res) => res.url().includes('/slots') && res.status() === 200,
+    );
+    const dayBtn = booking.getDatePicker().getByRole('button').filter({ hasText: String(tomorrow.getDate()) }).first();
+    await expect(dayBtn).toBeVisible();
+    await dayBtn.click();
+    await slotsPromise;
+
+    await expect(booking.getFreeSlots().first()).toBeVisible({ timeout: 5000 });
+    await booking.clickSlot(0);
+
+    await expect(booking.getNameInput()).toBeVisible();
+    await expect(booking.getEmailInput()).toBeVisible();
+    await expect(booking.getSubmitButton()).toBeDisabled();
+  });
+});
+
+test.describe('Гость — навигация назад (US-12)', () => {
+  test('кнопка "Назад" возвращает на главную страницу', async ({ page }) => {
+    const home = new HomePage(page);
+    await home.goto();
+    await page.getByRole('button', { name: 'Записаться' }).click();
+    await page.waitForURL(/\/book\//);
+
+    await page.getByRole('button', { name: /назад/i }).click();
+    await page.waitForURL('/');
+
+    await expect(home.getEventTypeCards().first()).toBeVisible({ timeout: 10000 });
+  });
+});

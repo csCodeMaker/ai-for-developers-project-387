@@ -80,7 +80,7 @@ export class AdminPage {
   }
 
   getEmptyBookingsMessage(): Locator {
-    return this.page.getByText('Нет предстоящих бронирований');
+    return this.page.getByText('Нет предстоящих броней.');
   }
 
   getDisabledBadge(): Locator {
