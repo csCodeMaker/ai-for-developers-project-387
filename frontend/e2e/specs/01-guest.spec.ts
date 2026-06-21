@@ -109,6 +109,31 @@ test.describe('Гость — создание бронирования (US-3)',
     const confirmation = new ConfirmationPage(page);
     await expect(confirmation.getSuccessMessage()).toBeVisible();
   });
+
+  test('кнопка отправки неактивна при пустых полях', async ({ page }) => {
+    const home = new HomePage(page);
+    await home.goto();
+    await page.getByRole('button', { name: 'Записаться' }).click();
+    await page.waitForURL(/\/book\//);
+
+    const booking = new BookingPage(page);
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const responsePromise = page.waitForResponse(
+      (res) => res.url().includes('/slots') && res.status() === 200,
+    );
+    const dayBtn = booking.getDatePicker().getByRole('button').filter({ hasText: String(tomorrow.getDate()) }).first();
+    await expect(dayBtn).toBeVisible();
+    await dayBtn.click();
+    await responsePromise;
+
+    await expect(booking.getFreeSlots().first()).toBeVisible({ timeout: 5000 });
+    await booking.clickSlot(0);
+
+    await expect(booking.getSubmitButton()).toBeDisabled();
+  });
 });
 
 test.describe('Гость — подтверждение бронирования (US-4)', () => {

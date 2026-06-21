@@ -5,6 +5,12 @@ import { API_BASE, SEED_OWNER } from '../fixtures/test-data';
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Администратор — просмотр бронирований (US-6)', () => {
+  test('показывает сообщение, когда нет бронирований', async ({ page }) => {
+    const admin = new AdminPage(page);
+    await admin.goto();
+    await expect(admin.getEmptyBookingsMessage()).toBeVisible({ timeout: 10000 });
+  });
+
   test('видит бронирование после того, как гость записался', async ({ page }) => {
     const res = await page.request.get(`${API_BASE}/api/admin/event-types`);
     const eventTypes = await res.json();
