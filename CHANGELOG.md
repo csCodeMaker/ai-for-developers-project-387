@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/csCodeMaker/ai-for-developers-project-387/compare/booking-service-v0.4.0...booking-service-v0.5.0) (2026-06-21)
+
+
+### Features
+
+* add comment reaction workflow ([6347f88](https://github.com/csCodeMaker/ai-for-developers-project-387/commit/6347f88dc639ccec4e7060d09ee50a615fa20007))
+* add permissions to review ([f3daed5](https://github.com/csCodeMaker/ai-for-developers-project-387/commit/f3daed59660234e11f757f28733aabe3375b6346))
+* add review comment workflow ([3070297](https://github.com/csCodeMaker/ai-for-developers-project-387/commit/30702971eaa8144077d472c62d94b40ccc6996ad))
+
+
+### Bug Fixes
+
+* review comment workflow ([d142644](https://github.com/csCodeMaker/ai-for-developers-project-387/commit/d142644dcf429de9209c8c33692f9413c2b0c8d8))
+
 ## [0.4.0](https://github.com/csCodeMaker/ai-for-developers-project-387/compare/booking-service-v0.3.0...booking-service-v0.4.0) (2026-06-21)
 
 
