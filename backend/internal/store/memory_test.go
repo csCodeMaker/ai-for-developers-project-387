@@ -45,6 +45,66 @@ func TestCreateBooking_SlotTaken(t *testing.T) {
 	assert.Len(t, s.ListBookings(), 1)
 }
 
+func TestGetEventType_OK(t *testing.T) {
+	s := New()
+	active := s.ListEventTypes(false)
+	require.Len(t, active, 1)
+
+	et, err := s.GetEventType(active[0].Id)
+	require.NoError(t, err)
+	assert.Equal(t, active[0].Title, et.Title)
+}
+
+func TestGetEventType_NotFound(t *testing.T) {
+	s := New()
+	_, err := s.GetEventType("nonexistent")
+	assert.ErrorIs(t, err, domain.ErrNotFound)
+}
+
+func TestUpdateOwner(t *testing.T) {
+	s := New()
+	originalID := s.GetOwner().Id
+
+	updated := s.UpdateOwner(api.Owner{
+		Name:  "Новое имя",
+		Email: "new@example.com",
+	})
+
+	assert.Equal(t, originalID, updated.Id)
+	assert.Equal(t, "Новое имя", updated.Name)
+	assert.Equal(t, "new@example.com", updated.Email)
+
+	// Проверяем, что хранилище обновилось
+	current := s.GetOwner()
+	assert.Equal(t, "Новое имя", current.Name)
+}
+
+func TestUpdateEventType_OK(t *testing.T) {
+	s := New()
+	active := s.ListEventTypes(true)
+	require.Len(t, active, 1)
+
+	updated, err := s.UpdateEventType(active[0].Id, api.CreateEventTypeRequest{
+		Title: "Новый заголовок", Description: "Новое описание", Duration: 60,
+	})
+	require.NoError(t, err)
+	assert.Equal(t, "Новый заголовок", updated.Title)
+	assert.Equal(t, "Новое описание", updated.Description)
+	assert.Equal(t, int32(60), updated.Duration)
+}
+
+func TestUpdateEventType_NotFound(t *testing.T) {
+	s := New()
+	_, err := s.UpdateEventType("nonexistent", api.CreateEventTypeRequest{})
+	assert.ErrorIs(t, err, domain.ErrNotFound)
+}
+
+func TestDisableEventType_NotFound(t *testing.T) {
+	s := New()
+	err := s.DisableEventType("nonexistent")
+	assert.ErrorIs(t, err, domain.ErrNotFound)
+}
+
 func TestDisableEventType_FiltersGuest(t *testing.T) {
 	s := New()
 	created := s.CreateEventType(api.CreateEventTypeRequest{Title: "Тест", Description: "d", Duration: 30})
