@@ -1,0 +1,15 @@
+.git
+.gitignore
+node_modules
+*.md
+typespec
+features
+DOCKER_SPEC.md
+AGENTS.md
+SPEC.md
+BACKEND_SPEC.md
+FRONT_SPEC.md
+CI_TESTS_SPEC.md
+opencode.json
+release-please-config.json
+.release-please-manifest.json

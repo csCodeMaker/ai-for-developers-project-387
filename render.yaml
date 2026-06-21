@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: booking-app
+    region: oregon
+    plan: free
+    env: docker
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "3000"
