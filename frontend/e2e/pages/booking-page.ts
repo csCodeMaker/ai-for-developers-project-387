@@ -56,6 +56,6 @@ export class BookingPage {
   }
 
   getNoSlotsMessage(): Locator {
-    return this.page.getByText('Нет свободных слотов на эту дату');
+    return this.page.getByText('Нет доступных слотов на этот день');
   }
 }
