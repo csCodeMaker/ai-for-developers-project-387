@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { AdminPage } from '../pages/admin-page';
+import { HomePage } from '../pages/home-page';
 import { API_BASE, SEED_OWNER } from '../fixtures/test-data';
 
 test.describe.configure({ mode: 'serial' });
@@ -119,5 +120,20 @@ test.describe('Администратор — редактирование пр�
     await page.reload();
     await expect(admin.getOwnerDescriptionInput()).toHaveValue('Обновлённое описание для теста');
     await expect(admin.getOwnerTimeZoneInput()).toHaveValue('Asia/Yekaterinburg');
+  });
+});
+
+test.describe('Гость — нет доступных типов событий (US-1)', () => {
+  test('видит сообщение об отсутствии типов, когда все отключены', async ({ page }) => {
+    const res = await page.request.get(`${API_BASE}/api/admin/event-types`);
+    const eventTypes: Array<{ id: string }> = await res.json();
+
+    for (const et of eventTypes) {
+      await page.request.delete(`${API_BASE}/api/admin/event-types/${et.id}`);
+    }
+
+    const home = new HomePage(page);
+    await home.goto();
+    await expect(page.getByText('Нет доступных типов событий')).toBeVisible();
   });
 });

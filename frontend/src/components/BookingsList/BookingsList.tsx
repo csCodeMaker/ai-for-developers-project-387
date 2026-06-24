@@ -16,7 +16,7 @@ function formatDateTime(iso: string): string {
 
 export function BookingsList({ bookings, loading }: BookingsListProps) {
   if (loading) return <Text c="dimmed" size="sm">Загрузка броней...</Text>;
-  if (bookings.length === 0) return <Text c="dimmed" size="sm">Нет предстоящих броней.</Text>;
+  if (bookings.length === 0) return <Text c="dimmed" size="sm">Нет предстоящих бронирований</Text>;
 
   return (
     <Table striped highlightOnHover withTableBorder data-testid="bookings-table">
